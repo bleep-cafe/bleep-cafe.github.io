@@ -3,6 +3,7 @@ import * as React from "react"
 
 import BaseNode from "./BaseNode"
 import Slider from "../controls/Slider"
+import { useGraphStore } from "../../hooks/useGraphStore"
 
 // CONSTANTS -------------------------------------------------------------------
 
@@ -22,10 +23,11 @@ export const defaults = {
 // COMPONENTS ------------------------------------------------------------------
 
 export default function DacNode({ id, data = defaults }) {
+    const updateNode = useGraphStore(state => state.updateNode);
     return (
         <BaseNode name={name} info={info} inputs={inputs} outputs={outputs}>
             <Slider label="master gain" value={data.gain} min={0} max={1} step={0.01}
-                onValueChange={([val]) => data.onNodeChange?.(id, { ...data, gain: val })} />
+                onValueChange={([val]) => updateNode(id, { ...data, gain: val })} />
         </BaseNode>
     )
 }

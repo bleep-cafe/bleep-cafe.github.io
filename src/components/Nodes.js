@@ -2,9 +2,10 @@ export { default as AmpNode } from "./nodes/AmpNode"
 export { default as DacNode } from "./nodes/DacNode"
 export { default as OscNode } from "./nodes/OscNode"
 
-import AmpNode from './nodes/AmpNode'
-import DacNode from './nodes/DacNode'
-import OscNode from './nodes/OscNode'
+
+import AmpNode, { defaults as AmpNodeDefaults } from './nodes/AmpNode'
+import DacNode, { defaults as DacNodeDefaults } from './nodes/DacNode'
+import OscNode, { defaults as OscNodeDefaults } from './nodes/OscNode'
 
 export default {
     AmpNode,
@@ -27,3 +28,9 @@ export const types = {
     [DacNode.name]: DacNode,
     [OscNode.name]: OscNode,
 }
+
+export const defaults = new Map([
+    [AmpNode.name, AmpNodeDefaults],
+    [DacNode.name, DacNodeDefaults],
+    [OscNode.name, OscNodeDefaults],
+]);

@@ -5,6 +5,8 @@ import * as Router from "react-router-dom"
 import BaseNode from "./BaseNode"
 import Radio from "../controls/Radio"
 import Slider from "../controls/Slider"
+import { useStore } from "reactflow"
+import { useGraphStore } from "../../hooks/useGraphStore"
 
 // CONSTANTS -------------------------------------------------------------------
 
@@ -33,15 +35,16 @@ export default function OscNode({ id, data = defaults, ...props }) {
                 </Router.Link>
             </p>
         </>
+    const updateNode = useGraphStore(state => state.updateNode)
 
     return (
         <BaseNode name="osc" info={info} inputs={inputs} outputs={outputs} {...props}>
             <Slider label="frequency" value={data.frequency} min={20} max={7040} step={1}
                 formatter={val => `${val} Hz`}
-                onValueChange={([val]) => data.onNodeChange?.(id, { ...data, frequency: val })} />
+                onValueChange={([val]) => updateNode(id, { ...data, frequency: val })} />
             <hr className="my-2 border-neutral-200" />
             <Radio label="waveform" value={data.waveform} options={["sine", "triangle", "sawtooth", "square"]}
-                onValueChange={val => data.onNodeChange?.(id, { ...data, waveform: val })} />
+                onValueChange={val => updateNode(id, { ...data, waveform: val })} />
         </BaseNode>
     )
 }

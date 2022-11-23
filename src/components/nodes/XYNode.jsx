@@ -2,6 +2,7 @@ import * as Audio from "../../audio/context"
 import * as React from "react"
 
 import BaseNode from "./BaseNode"
+import { useGraphStore } from "../../hooks/useGraphStore"
 
 const name = "xy"
 const info =
@@ -13,15 +14,15 @@ const inputs = []
 const outputs = ["x", "y"]
 
 export default function XYNode({ id, data = defaults }) {
-
+    const updateNode = useGraphStore(state => state.updateNode);
     return (
         <BaseNode name={name} info={info} inputs={inputs} outputs={outputs}>
             <Slider label="x" value={data.x} min={0} max={1} step={0.01}
-                onValueChange={([val]) => data.onNodeChange?.(id, { ...data, x: val })}
+                onValueChange={([val]) => updateNode(id, { ...data, x: val })}
             />
 
             <Slider label="y" value={data.y} min={0} max={1} step={0.01}
-                onValueChange={([val]) => data.onNodeChange?.(id, { ...data, y: val })}
+                onValueChange={([val]) => updateNode(id, { ...data, y: val })}
             />
         </BaseNode>
     )
