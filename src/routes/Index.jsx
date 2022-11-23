@@ -4,6 +4,7 @@ import * as Router from "react-router-dom"
 import ReactFlow from "reactflow"
 import { useRef } from "react"
 import { useGraph } from "../hooks/useGraph"
+import { GraphContext } from '../contexts/graphContext'
 
 export default function Index() {
     return (
@@ -70,17 +71,21 @@ function DemoGraph() {
 
     const nodes = useStore(state => state.nodes);
     const edges = useStore(state => state.edges);
-    const updateGraph = useStore(state => state.updateGraph);
+    const updateNodes = useStore(state => state.updateNodes);
+    const updateEdges = useStore(state => state.updateEdges);
 
-    return <ReactFlow
-        edges={edges}
-        nodes={nodes}
-        nodeTypes={Nodes.types}
-        onNodesChange={updateGraph}
-        className="bg-neutral-100"
-        preventScrolling={false}
-        zoomOnScroll={false}
-        panOnDrag={false}
-        ref={ref}
-    />
+    return <GraphContext.Provider value={useStore}>
+        <ReactFlow
+            edges={edges}
+            nodes={nodes}
+            nodeTypes={Nodes.types}
+            onNodesChange={updateNodes}
+            onEdgesChange={updateEdges}
+            className="bg-neutral-100"
+            preventScrolling={false}
+            zoomOnScroll={false}
+            panOnDrag={false}
+            ref={ref}
+        />
+    </GraphContext.Provider>
 }

@@ -1,11 +1,14 @@
 import create from "zustand";
-import { applyNodeChanges } from "reactflow";
+import { applyEdgeChanges, applyNodeChanges } from "reactflow";
 import { distribute } from "../util/maths";
 import { useLayoutEffect, useEffect, useRef } from "react";
 import useElementSize from "./useElementSize";
 import { defaults } from "../components/Nodes";
 import useAudio from "./useAudio";
 
+// This could be a component and would be less clunky to use but it's weird for
+// a component to not react to changes in props, while it's expected for hook
+// arguments to represent an initial value
 export function useGraph({ nodes, edges, ref }) {
     // create a store on first render. I'd like to use useMemo but React makes no
     // guarantee that it's only called once even with an empty dependency array.
@@ -18,7 +21,6 @@ export function useGraph({ nodes, edges, ref }) {
                 data: {
                     ...defaults.get(n.type),
                     ...n.data,
-                    onNodeChange: (...args) => updateNode(...args),
                 },
             })),
             edges: edges,
@@ -41,10 +43,13 @@ export function useGraph({ nodes, edges, ref }) {
                 return set(state => ({ nodes: state.nodes.map(n => n.id === id ? {...n, data: {...n.data, ...data}}: n)}));
             },
 
-            // This action gets dispatched by the ReactFlow component itself.
-            // Presumably when things change 😅 somehow. (eg node positions)
-            updateGraph(changes) {
+            updateNodes(changes) {
                 return set(state => ({ nodes: applyNodeChanges(changes, state.nodes) }));
+            },
+
+            updateEdges(changes) {
+                debugger;
+                return set(state => ({ edges: applyEdgeChanges(changes, state.edges) }));
             },
         }));
     }
@@ -54,7 +59,9 @@ export function useGraph({ nodes, edges, ref }) {
     const [_, setAudioFromReactFlow, context] = useAudio();
     useEffect(() => { window.addEventListener('click', () => context.resume(), { once: true }) }, [])
     const reactiveNodes = useStore(state => state.nodes);
-    useEffect(() => { setAudioFromReactFlow(reactiveNodes, edges) }, [reactiveNodes])
+    const reactiveEdges = useStore(state => state.edges);
+    // setAudioFromReactFlow probably shouldn't be in an effect
+    useEffect(() => { setAudioFromReactFlow(reactiveNodes, reactiveEdges) }, [reactiveNodes, reactiveEdges])
 
     const distributeNodes = useStore(store => store.distributeNodes);
     const { width, height } = useElementSize(ref);
