@@ -1,15 +1,9 @@
-import * as Amp from "../components/nodes/AmpNode"
-import * as Dac from "../components/nodes/DacNode"
 import * as Nodes from '../components/Nodes'
-import * as Osc from "../components/nodes/OscNode"
 import * as Router from "react-router-dom"
 
-import ReactFlow, { applyNodeChanges } from "reactflow"
-import { useEffect, useReducer } from "react"
-
-import { distribute } from "../util/maths"
-import useAudio from "../hooks/useAudio"
-import useElementSize from "../hooks/useElementSize"
+import ReactFlow from "reactflow"
+import { useRef } from "react"
+import { useGraph } from "../hooks/useGraph"
 
 export default function Index() {
     return (
@@ -60,66 +54,29 @@ export default function Index() {
 // 
 
 function DemoGraph() {
-    const [ref, { width, height }] = useElementSize()
-    // This is obviously a super ad-hoc way to do state management. What I'd really
-    // like is to use some sort of state management library like Zustand (that
-    // one is recommended by the ReactFlow folks) but I'm not sure how to do that
-    // in a way that makes sure each graph gets its own state.
-    const [nodes, dispatch] = useReducer((state, { event, ...action }) => {
-        switch (event) {
-            // The width of the container isn't fixed in pixels. We want to
-            // distribute the nodes evenly across the width of the container, so
-            // we need to re-set the position of everything once we have the
-            // container's dimensions.
-            case "onGotDimensions": {
-                const { width, height } = action
-                return applyNodeChanges(
-                    state.map(({ id }, i) => ({ id, type: "position", position: { x: distribute(0, width, 3, i) - 54, y: height / 4 } })),
-                    state
-                )
-            }
+    const ref = useRef(null);
+    const useStore = useGraph({
+        ref,
+        nodes: [
+            { id: "1", type: Nodes.names.osc },
+            { id: "2", type: Nodes.names.amp },
+            { id: "3", type: Nodes.names.dac },
+        ],
+        edges: [
+            { id: "1->2", source: "1", sourceHandle: "out", target: "2", targetHandle: "in" },
+            { id: "2->3", source: "2", sourceHandle: "out", target: "3", targetHandle: "in" },
+        ],
+    });
 
-            // This action gets dispatched by individual nodes whenever their 
-            // data changes. 
-            case "onNodeChange": {
-                const { id, data } = action
-                return state.map((node) => {
-                    if (node.id == id) {
-                        node.data = { ...node.data, ...data }
-                    }
-                    return node
-                })
-            }
-
-            // This action gets dispatched by the ReactFlow component itself. 
-            // Presumably when things change 😅 somehow.
-            case "onNodesChange": {
-                const { changes } = action
-                return applyNodeChanges(changes, state)
-            }
-
-            default:
-                return state
-        }
-    }, [
-        // Once we work out state management, we won't need to pass down these
-        // `onNodeChange` handlers anymore. Instead, nodes can just dispatch
-        // the appropriate actions and magically it will all work, I hope.
-        { id: "1", type: Nodes.names.osc, position: { x: 0, y: 0 }, data: { ...Osc.defaults, onNodeChange: (id, data) => dispatch({ event: "onNodeChange", id, data }) } },
-        { id: "2", type: Nodes.names.amp, position: { x: 0, y: 0 }, data: { ...Amp.defaults, onNodeChange: (id, data) => dispatch({ event: "onNodeChange", id, data }) } },
-        { id: "3", type: Nodes.names.dac, position: { x: 0, y: 0 }, data: { ...Dac.defaults, onNodeChange: (id, data) => dispatch({ event: "onNodeChange", id, data }) } },
-    ])
-    const [_, setAudioFromReactFlow, context] = useAudio()
-
-    useEffect(() => { window.addEventListener('click', () => context.resume()) }, [])
-    useEffect(() => { setAudioFromReactFlow(nodes, edges) }, [nodes])
-    useEffect(() => dispatch({ event: "onGotDimensions", width, height }), [width])
+    const nodes = useStore(state => state.nodes);
+    const edges = useStore(state => state.edges);
+    const updateGraph = useStore(state => state.updateGraph);
 
     return <ReactFlow
         edges={edges}
         nodes={nodes}
         nodeTypes={Nodes.types}
-        onNodesChange={changes => dispatch({ event: "onNodesChange", changes })}
+        onNodesChange={updateGraph}
         className="bg-neutral-100"
         preventScrolling={false}
         zoomOnScroll={false}
@@ -127,8 +84,3 @@ function DemoGraph() {
         ref={ref}
     />
 }
-
-const edges = [
-    { id: "1->2", source: "1", sourceHandle: "out", target: "2", targetHandle: "in" },
-    { id: "2->3", source: "2", sourceHandle: "out", target: "3", targetHandle: "in" },
-]
