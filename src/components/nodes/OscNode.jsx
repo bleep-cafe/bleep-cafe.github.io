@@ -5,12 +5,12 @@ import * as Router from "react-router-dom"
 import BaseNode from "./BaseNode"
 import Radio from "../controls/Radio"
 import Slider from "../controls/Slider"
-import { useStore } from "reactflow"
 import { useGraphStore } from "../../hooks/useGraphStore"
+import { useStore } from "reactflow"
 
 // CONSTANTS -------------------------------------------------------------------
 
-const inputs = [".freq"]
+const inputs = [".frequency"]
 const outputs = [""]
 
 export const defaults = {
