@@ -50,7 +50,7 @@ export function useAnalyser(id) {
     useEffect(() => {
         if (id in ctx.nodes) {
             ctx.nodes[id].connect(analyser)
-            return () => ctx.nodes[id].disconnect(analyser)
+            return () => ctx.nodes[id]?.disconnect(analyser)
         }
     }, [])
 
