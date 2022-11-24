@@ -22,7 +22,7 @@ export function Root({ content, className = "", children, ...props }) {
 export function Item({ className = "", ...props }) {
     return <RadixContextMenu.Item
         className={`${className} group flex items-center pl-4 pr-2 w-56 
-            hover:bg-gradient-to-br hover:from-indigo-500 hover:to-indigo-400 hover:text-white`
+            hover:bg-gradient-to-r hover:from-indigo-500 hover:to-blue-400 hover:text-white`
         }
         {...props}
     />
@@ -30,7 +30,7 @@ export function Item({ className = "", ...props }) {
 
 export function Divider({ className = "", ...props }) {
     return <RadixContextMenu.Separator
-        className={className + " mx-4 my-1 border-b border-indigo-500"}
+        className={className + " mx-4 my-1 h-[1px] bg-gradient-to-r from-indigo-500 to-blue-400"}
         {...props}
     />
 }
