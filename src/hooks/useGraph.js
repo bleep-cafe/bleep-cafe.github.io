@@ -14,7 +14,7 @@ export function useGraph({ nodes, edges, ref }) {
     // guarantee that it's only called once even with an empty dependency array.
     let useStoreRef = useRef(null);
     if (!useStoreRef.current) {
-        useStoreRef.current = create(set => ({
+        useStoreRef.current = create((set, get) => ({
             nodes: nodes.map(n => ({
                 ...n,
                 position: { x: 0, y: 0, ...n.position },
@@ -39,8 +39,16 @@ export function useGraph({ nodes, edges, ref }) {
                 )
             },
 
+            insertNode(node) {
+                return set({ nodes: applyNodeChanges([{ type: 'add', item: node }], get().nodes) })
+            },
+
             updateNode(id, data) {
-                return set(state => ({ nodes: state.nodes.map(n => n.id === id ? {...n, data: {...n.data, ...data}}: n)}));
+                return set(state => ({ nodes: state.nodes.map(n => n.id === id ? { ...n, data: { ...n.data, ...data } } : n) }));
+            },
+
+            removeNode(id) {
+                return set(state => ({ nodes: state.nodes.filter(n => n.id !== id) }));
             },
 
             updateNodes(changes) {
