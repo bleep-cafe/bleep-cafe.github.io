@@ -1,10 +1,11 @@
-import create from "zustand";
-import { applyEdgeChanges, applyNodeChanges } from "reactflow";
-import { distribute } from "../util/maths";
-import { useLayoutEffect, useEffect, useRef } from "react";
-import useElementSize from "./useElementSize";
-import { defaults } from "../components/Nodes";
-import useAudio from "./useAudio";
+import { addEdge, applyEdgeChanges, applyNodeChanges } from "reactflow"
+import { useEffect, useLayoutEffect, useRef } from "react"
+
+import create from "zustand"
+import { defaults } from "../components/Nodes"
+import { distribute } from "../util/maths"
+import useAudio from "./useAudio"
+import useElementSize from "./useElementSize"
 
 // This could be a component and would be less clunky to use but it's weird for
 // a component to not react to changes in props, while it's expected for hook
@@ -12,7 +13,7 @@ import useAudio from "./useAudio";
 export function useGraph({ nodes, edges, ref }) {
     // create a store on first render. I'd like to use useMemo but React makes no
     // guarantee that it's only called once even with an empty dependency array.
-    let useStoreRef = useRef(null);
+    let useStoreRef = useRef(null)
     if (!useStoreRef.current) {
         useStoreRef.current = create((set, get) => ({
             nodes: nodes.map(n => ({
@@ -29,14 +30,12 @@ export function useGraph({ nodes, edges, ref }) {
             // we need to re-set the position of everything once we have the
             // container's dimensions.
             distributeNodes({ width, height }) {
-                return set(
-                    state => ({
-                        nodes: applyNodeChanges(
-                            state.nodes.map(({ id }, i) => ({ id, type: "position", position: { x: distribute(0, width, 3, i) - 54, y: height / 4 } })),
-                            state.nodes,
-                        )
-                    }),
-                )
+                return set({
+                    nodes: applyNodeChanges(
+                        get().nodes.map(({ id }, i) => ({ id, type: "position", position: { x: distribute(0, width, 3, i) - 54, y: height / 4 } })),
+                        get().nodes,
+                    )
+                })
             },
 
             insertNode(node) {
@@ -44,36 +43,38 @@ export function useGraph({ nodes, edges, ref }) {
             },
 
             updateNode(id, data) {
-                return set(state => ({ nodes: state.nodes.map(n => n.id === id ? { ...n, data: { ...n.data, ...data } } : n) }));
+                return set({ nodes: get().nodes.map(n => n.id === id ? { ...n, data: { ...n.data, ...data } } : n) })
             },
 
             removeNode(id) {
-                return set(state => ({ nodes: state.nodes.filter(n => n.id !== id) }));
+                return set({ nodes: get().nodes.filter(n => n.id !== id) })
             },
 
             updateNodes(changes) {
-                return set(state => ({ nodes: applyNodeChanges(changes, state.nodes) }));
+                return set({ nodes: applyNodeChanges(changes, get().nodes) })
             },
 
             updateEdges(changes) {
-                debugger;
-                return set(state => ({ edges: applyEdgeChanges(changes, state.edges) }));
+                return set({ edges: applyEdgeChanges(changes, get().edges) })
             },
-        }));
-    }
-    const useStore = useStoreRef.current;
-    const updateNode = useStore(state => state.updateNode);
 
-    const [_, setAudioFromReactFlow, context] = useAudio();
+            onConnect(params) {
+                return set({ edges: addEdge(params, get().edges) })
+            }
+        }))
+    }
+    const useStore = useStoreRef.current
+    const reactiveNodes = useStore(state => state.nodes)
+    const reactiveEdges = useStore(state => state.edges)
+    const [_, setAudioFromReactFlow, context] = useAudio()
+
     useEffect(() => { window.addEventListener('click', () => context.resume(), { once: true }) }, [])
-    const reactiveNodes = useStore(state => state.nodes);
-    const reactiveEdges = useStore(state => state.edges);
-    // setAudioFromReactFlow probably shouldn't be in an effect
     useEffect(() => { setAudioFromReactFlow(reactiveNodes, reactiveEdges) }, [reactiveNodes, reactiveEdges])
 
-    const distributeNodes = useStore(store => store.distributeNodes);
-    const { width, height } = useElementSize(ref);
-    useLayoutEffect(() => distributeNodes({ width, height }), [width, height]);
+    const distributeNodes = useStore(store => store.distributeNodes)
+    const { width, height } = useElementSize(ref)
 
-    return useStore;
+    useLayoutEffect(() => distributeNodes({ width, height }), [width, height])
+
+    return useStore
 }
