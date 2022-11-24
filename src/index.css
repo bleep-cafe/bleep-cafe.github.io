@@ -20,6 +20,13 @@ things like have full-width images or graphs but keep text in a tight column.
     @apply max-w-xl mx-auto p-4;
 }
 
+/* Stying on Radix components */
+
+div[data-radix-collection-item] * {
+    @apply select-none cursor-default;
+}
+
+
 /* ReactFlow themeing: https://reactflow.dev/docs/guides/theming/#react-flow-class-names 
 
 I've kept all the empty classes here so it's easy to tweak and add in the future,
