@@ -1,4 +1,4 @@
-import { useCallback, useLayoutEffect, useState } from "react"
+import { useCallback, useLayoutEffect, useState } from 'react'
 
 export default function useElementSize(ref) {
     const [size, setSize] = useState({
@@ -10,10 +10,13 @@ export default function useElementSize(ref) {
         setSize({
             width: ref?.current?.offsetWidth || 0,
             height: ref?.current?.offsetHeight || 0,
-        });
-    }, []);
+        })
+    }, [])
 
-    useLayoutEffect(handleSize, [ref?.current?.offsetHeight, ref?.current?.offsetWidth])
+    useLayoutEffect(handleSize, [
+        ref?.current?.offsetHeight,
+        ref?.current?.offsetWidth,
+    ])
 
     return size
 }

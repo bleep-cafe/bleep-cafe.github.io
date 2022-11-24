@@ -1,11 +1,11 @@
-import { addEdge, applyEdgeChanges, applyNodeChanges } from "reactflow"
-import { useEffect, useLayoutEffect, useRef } from "react"
+import { addEdge, applyEdgeChanges, applyNodeChanges } from 'reactflow'
+import { useEffect, useLayoutEffect, useRef } from 'react'
 
-import create from "zustand"
-import { defaults } from "../components/Nodes"
-import { distribute } from "../util/maths"
-import useAudio from "./useAudio"
-import useElementSize from "./useElementSize"
+import create from 'zustand'
+import { defaults } from '../components/Nodes'
+import { distribute } from '../util/maths'
+import useAudio from './useAudio'
+import useElementSize from './useElementSize'
 
 // This could be a component and would be less clunky to use but it's weird for
 // a component to not react to changes in props, while it's expected for hook
@@ -16,7 +16,7 @@ export function useGraph({ nodes, edges, ref }) {
     let useStoreRef = useRef(null)
     if (!useStoreRef.current) {
         useStoreRef.current = create((set, get) => ({
-            nodes: nodes.map(n => ({
+            nodes: nodes.map((n) => ({
                 ...n,
                 position: { x: 0, y: 0, ...n.position },
                 data: {
@@ -32,22 +32,38 @@ export function useGraph({ nodes, edges, ref }) {
             distributeNodes({ width, height }) {
                 return set({
                     nodes: applyNodeChanges(
-                        get().nodes.map(({ id }, i) => ({ id, type: "position", position: { x: distribute(0, width, 3, i) - 54, y: height / 4 } })),
-                        get().nodes,
-                    )
+                        get().nodes.map(({ id }, i) => ({
+                            id,
+                            type: 'position',
+                            position: {
+                                x: distribute(0, width, 3, i) - 54,
+                                y: height / 4,
+                            },
+                        })),
+                        get().nodes
+                    ),
                 })
             },
 
             insertNode(node) {
-                return set({ nodes: applyNodeChanges([{ type: 'add', item: node }], get().nodes) })
+                return set({
+                    nodes: applyNodeChanges(
+                        [{ type: 'add', item: node }],
+                        get().nodes
+                    ),
+                })
             },
 
             updateNode(id, data) {
-                return set({ nodes: get().nodes.map(n => n.id === id ? { ...n, data: { ...n.data, ...data } } : n) })
+                return set({
+                    nodes: get().nodes.map((n) =>
+                        n.id === id ? { ...n, data: { ...n.data, ...data } } : n
+                    ),
+                })
             },
 
             removeNode(id) {
-                return set({ nodes: get().nodes.filter(n => n.id !== id) })
+                return set({ nodes: get().nodes.filter((n) => n.id !== id) })
             },
 
             updateNodes(changes) {
@@ -60,18 +76,22 @@ export function useGraph({ nodes, edges, ref }) {
 
             onConnect(params) {
                 return set({ edges: addEdge(params, get().edges) })
-            }
+            },
         }))
     }
     const useStore = useStoreRef.current
-    const reactiveNodes = useStore(state => state.nodes)
-    const reactiveEdges = useStore(state => state.edges)
+    const reactiveNodes = useStore((state) => state.nodes)
+    const reactiveEdges = useStore((state) => state.edges)
     const [_, setAudioFromReactFlow, context] = useAudio()
 
-    useEffect(() => { window.addEventListener('click', () => context.resume(), { once: true }) }, [])
-    useEffect(() => { setAudioFromReactFlow(reactiveNodes, reactiveEdges) }, [reactiveNodes, reactiveEdges])
+    useEffect(() => {
+        window.addEventListener('click', () => context.resume(), { once: true })
+    }, [])
+    useEffect(() => {
+        setAudioFromReactFlow(reactiveNodes, reactiveEdges)
+    }, [reactiveNodes, reactiveEdges])
 
-    const distributeNodes = useStore(store => store.distributeNodes)
+    const distributeNodes = useStore((store) => store.distributeNodes)
     const { width, height } = useElementSize(ref)
 
     useLayoutEffect(() => distributeNodes({ width, height }), [width, height])
