@@ -9,7 +9,7 @@ export function Root({ content, className = "", children, ...props }) {
 
             <RadixContextMenu.Portal>
                 <RadixContextMenu.Content
-                    className={className + "  bg-neutral-700 text-white rounded shadow-lg"}
+                    className={className + " bg-white rounded shadow-lg"}
                     {...props}
                 >
                     {content}
@@ -19,11 +19,20 @@ export function Root({ content, className = "", children, ...props }) {
     )
 }
 
-export default Root
-
 export function Item({ className = "", ...props }) {
     return <RadixContextMenu.Item
-        className={className + " flex items-center px-2 w-40 hover:bg-neutral-900"}
+        className={`${className} group flex items-center pl-4 pr-2 w-56 
+            hover:bg-gradient-to-br hover:from-indigo-500 hover:to-indigo-400 hover:text-white`
+        }
         {...props}
     />
 }
+
+export function Divider({ className = "", ...props }) {
+    return <RadixContextMenu.Separator
+        className={className + " mx-4 my-1 border-b border-indigo-500"}
+        {...props}
+    />
+}
+
+export default Root
