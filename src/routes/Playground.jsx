@@ -3,6 +3,7 @@ import * as ContextMenu from "../components/ContextMenu"
 import * as Dac from "../components/nodes/DacNode"
 import * as Nodes from "../components/Nodes"
 import * as Osc from "../components/nodes/OscNode"
+import * as XY from "../components/nodes/XYNode"
 
 import ReactFlow, { ReactFlowProvider } from "reactflow"
 import { useEffect, useRef, useState } from "react"
@@ -69,6 +70,8 @@ export default function Playground() {
         { type: "item", label: "oscillator", shortcut: "O", onSelect: createNode(Osc.asReactFlowNode), classes: "rounded-t" },
         { type: "item", label: "amp", shortcut: "A", onSelect: createNode(Amp.asReactFlowNode) },
         { type: "divider" },
+        { type: "item", label: "xy pad", onSelect: createNode(XY.asReactFlowNode) },
+        { type: "divider" },
         { type: "item", label: "dac", shortcut: "D", onSelect: createNode(Dac.asReactFlowNode), classes: "rounded-b" },
     ]
 
@@ -77,7 +80,11 @@ export default function Playground() {
             case "item":
                 return <ContextMenu.Item key={label} onSelect={onSelect} className={classes}>
                     <span className="text-sm flex-1">{label}</span>
-                    <kbd className="text-xs w-10 font-mono text-right text-neutral-500 group-hover:text-white">⌘+{shortcut}</kbd>
+                    {shortcut &&
+                        <kbd className="text-xs w-10 font-mono text-right text-neutral-500 group-hover:text-white">
+                            ⌘+{shortcut}
+                        </kbd>
+                    }
                 </ContextMenu.Item>
 
             case "divider":
