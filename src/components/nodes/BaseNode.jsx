@@ -49,7 +49,7 @@ export default function BaseNode({ name, info, inputs, outputs, children, standa
                     id={id ? `out-${id}` : "out"}
                     title={id || "out"}
                     position={ReactFlow.Position.Right}
-                    style={{ top: distribute(0, 100, inputs.length, i) + "%" }}
+                    style={{ top: distribute(0, 100, outputs.length, i) + "%" }}
                     type="source"
                 />
             )}
