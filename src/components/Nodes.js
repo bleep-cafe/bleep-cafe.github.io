@@ -1,7 +1,6 @@
-export { default as AmpNode } from "./nodes/AmpNode"
-export { default as DacNode } from "./nodes/DacNode"
-export { default as OscNode } from "./nodes/OscNode"
-
+export { default as AmpNode } from './nodes/AmpNode'
+export { default as DacNode } from './nodes/DacNode'
+export { default as OscNode } from './nodes/OscNode'
 
 import AmpNode, { defaults as AmpNodeDefaults } from './nodes/AmpNode'
 import DacNode, { defaults as DacNodeDefaults } from './nodes/DacNode'
@@ -33,4 +32,4 @@ export const defaults = new Map([
     [AmpNode.name, AmpNodeDefaults],
     [DacNode.name, DacNodeDefaults],
     [OscNode.name, OscNodeDefaults],
-]);
+])

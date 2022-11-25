@@ -1,0 +1,15 @@
+name: Format code
+on: [push]
+jobs:
+  Format-Code:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v3
+        with:
+          ref: ${{ github.head_ref }}
+
+      - name: Prettier Action
+        uses: creyD/prettier_action@v4.2
+        with:
+          commit_message: ":art: Format code with prettier"
