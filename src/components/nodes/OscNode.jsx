@@ -10,6 +10,22 @@ import { useStore } from "reactflow"
 
 // CONSTANTS -------------------------------------------------------------------
 
+const name = "osc"
+const info =
+    <>
+        <p>
+            An oscillator produces signals by quickly repeating
+            a <strong>waveform</strong>. The <strong>frequency</strong> of
+            the oscillator, measured in <strong>Hertz (Hz)</strong>, is the
+            number of times it repeats per second.
+        </p>
+        <p className="mt-4 text-right">
+            <Router.Link to="/" className="underline">
+                Learn more about <strong>pitch</strong>.
+            </Router.Link>
+        </p>
+    </>
+
 const inputs = [".frequency"]
 const outputs = [""]
 
@@ -20,25 +36,11 @@ export const defaults = {
 
 // COMPONENTS ------------------------------------------------------------------
 
-export default function OscNode({ id, data = defaults, ...props }) {
-    const info =
-        <>
-            <p>
-                An oscillator produces signals by quickly repeating
-                a <strong>waveform</strong>. The <strong>frequency</strong> of
-                the oscillator, measured in <strong>Hertz (Hz)</strong>, is the
-                number of times it repeats per second.
-            </p>
-            <p className="mt-4 text-right">
-                <Router.Link to="/" className="underline">
-                    Learn more about <strong>pitch</strong>.
-                </Router.Link>
-            </p>
-        </>
+export default function OscNode({ id, data = defaults }) {
     const updateNode = useGraphStore(state => state.updateNode)
 
     return (
-        <BaseNode name="osc" info={info} inputs={inputs} outputs={outputs} {...props}>
+        <BaseNode name={name} info={info} inputs={inputs} outputs={outputs}>
             <Slider label="frequency" value={data.frequency} min={20} max={7040} step={1}
                 formatter={val => `${val} Hz`}
                 onValueChange={([val]) => updateNode(id, { ...data, frequency: val })} />
