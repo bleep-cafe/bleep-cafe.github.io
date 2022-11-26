@@ -2,6 +2,7 @@ import AmpNode, * as Amp from '../components/nodes/AmpNode'
 import DacNode, * as Dac from '../components/nodes/DacNode'
 import OscNode, * as Osc from '../components/nodes/OscNode'
 import VirtualAudioContext, * as Audio from '../audio/context'
+import XYNode, * as XY from '../components/nodes/XYNode'
 import { useEffect, useMemo } from 'react'
 
 // I don't think there's any reason to have multiple audio contexts on a page
@@ -132,6 +133,8 @@ const nodesFromReactFlow = (rfNodes, rfEdges) =>
                     return Dac.asAudioNodes(rfNode.id, rfNode.data)
                 case OscNode.name:
                     return Osc.asAudioNodes(rfNode.id, rfNode.data, connections)
+                case XYNode.name:
+                    return XY.asAudioNodes(rfNode.id, rfNode.data, connections)
                 default:
                     return null
             }
