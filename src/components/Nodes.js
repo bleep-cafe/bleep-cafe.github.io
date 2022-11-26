@@ -1,12 +1,12 @@
-export { default as AmpNode } from "./nodes/AmpNode"
-export { default as DacNode } from "./nodes/DacNode"
-export { default as OscNode } from "./nodes/OscNode"
-export { default as XYNode } from "./nodes/XYNode"
+export { default as AmpNode } from './nodes/AmpNode'
+export { default as DacNode } from './nodes/DacNode'
+export { default as OscNode } from './nodes/OscNode'
+export { default as XYNode } from './nodes/XYNode'
 
-import AmpNode, { defaults as AmpNodeDefaults } from "./nodes/AmpNode"
-import DacNode, { defaults as DacNodeDefaults } from "./nodes/DacNode"
-import OscNode, { defaults as OscNodeDefaults } from "./nodes/OscNode"
-import XYNode, { defaults as XYNodeDefaults } from "./nodes/XYNode"
+import AmpNode, { defaults as AmpNodeDefaults } from './nodes/AmpNode'
+import DacNode, { defaults as DacNodeDefaults } from './nodes/DacNode'
+import OscNode, { defaults as OscNodeDefaults } from './nodes/OscNode'
+import XYNode, { defaults as XYNodeDefaults } from './nodes/XYNode'
 
 export default {
     AmpNode,
@@ -37,4 +37,4 @@ export const defaults = new Map([
     [DacNode.name, DacNodeDefaults],
     [OscNode.name, OscNodeDefaults],
     [XYNode.name, XYNodeDefaults],
-]);
+])

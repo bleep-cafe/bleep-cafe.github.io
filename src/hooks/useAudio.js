@@ -1,9 +1,9 @@
-import AmpNode, * as Amp from "../components/nodes/AmpNode"
-import DacNode, * as Dac from "../components/nodes/DacNode"
-import OscNode, * as Osc from "../components/nodes/OscNode"
-import VirtualAudioContext, * as Audio from "../audio/context"
-import XYNode, * as XY from "../components/nodes/XYNode"
-import { useEffect, useMemo } from "react"
+import AmpNode, * as Amp from '../components/nodes/AmpNode'
+import DacNode, * as Dac from '../components/nodes/DacNode'
+import OscNode, * as Osc from '../components/nodes/OscNode'
+import VirtualAudioContext, * as Audio from '../audio/context'
+import XYNode, * as XY from '../components/nodes/XYNode'
+import { useEffect, useMemo } from 'react'
 
 // I don't think there's any reason to have multiple audio contexts on a page
 // so we'll just have a single top-level constant that every call to `useAudio`
@@ -87,25 +87,25 @@ const nodesFromReactFlow = (rfNodes, rfEdges) =>
                 const connection = Audio.ref(
                     target.startsWith('.') || target == ''
                         ? // Given a node id "foo", this handles creating connections
-                        // to the node's default input, which is just "foo", as well
-                        // as any of its parameters:
-                        //
-                        // foo
-                        // foo.gain
-                        // ...etc...
-                        //
-                        // The virtual audio context knows how to handle connections
-                        // to parameters.
-                        rfEdge.target + target
+                          // to the node's default input, which is just "foo", as well
+                          // as any of its parameters:
+                          //
+                          // foo
+                          // foo.gain
+                          // ...etc...
+                          //
+                          // The virtual audio context knows how to handle connections
+                          // to parameters.
+                          rfEdge.target + target
                         : // A ReactFlow node may map to multiple audio nodes, in which
-                        // case we expect the io to be appropriately namespaced. If
-                        // we have an xy pad with the id "foo", we might expect to
-                        // have outputs for the two axes:
-                        //
-                        // out-foo-x
-                        // out-foo-y
-                        //
-                        rfEdge.target + '-' + target
+                          // case we expect the io to be appropriately namespaced. If
+                          // we have an xy pad with the id "foo", we might expect to
+                          // have outputs for the two axes:
+                          //
+                          // out-foo-x
+                          // out-foo-y
+                          //
+                          rfEdge.target + '-' + target
                 )
 
                 if (rfEdge.source + source in connections) {
@@ -120,18 +120,23 @@ const nodesFromReactFlow = (rfNodes, rfEdges) =>
 
         // We're mutating rfEdges each iteration of the reduce. This is a bit sneaky
         // but it's a simple way to make sure we're not walking every single edge
-        // every single iteration. 
+        // every single iteration.
         rfEdges = rfEdgesNew
 
         // I long for pattern matching 😭. This is just mapping the node type to the
-        // right constructor for virtual audio nodes. 
+        // right constructor for virtual audio nodes.
         const newNodes = (() => {
             switch (rfNode.type) {
-                case AmpNode.name: return Amp.asAudioNodes(rfNode.id, rfNode.data, connections)
-                case DacNode.name: return Dac.asAudioNodes(rfNode.id, rfNode.data)
-                case OscNode.name: return Osc.asAudioNodes(rfNode.id, rfNode.data, connections)
-                case XYNode.name: return XY.asAudioNodes(rfNode.id, rfNode.data, connections)
-                default: return null
+                case AmpNode.name:
+                    return Amp.asAudioNodes(rfNode.id, rfNode.data, connections)
+                case DacNode.name:
+                    return Dac.asAudioNodes(rfNode.id, rfNode.data)
+                case OscNode.name:
+                    return Osc.asAudioNodes(rfNode.id, rfNode.data, connections)
+                case XYNode.name:
+                    return XY.asAudioNodes(rfNode.id, rfNode.data, connections)
+                default:
+                    return null
             }
         })()
 
