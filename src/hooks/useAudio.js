@@ -1,4 +1,4 @@
-import { ctx } from "../util/audioContext"
+import { ctx } from '../util/audioContext'
 import AmpNode, * as Amp from '../components/nodes/AmpNode'
 import DacNode, * as Dac from '../components/nodes/DacNode'
 import OscNode, * as Osc from '../components/nodes/OscNode'
@@ -114,7 +114,11 @@ const nodesFromReactFlow = (rfNodes, rfEdges) =>
         // every single iteration.
         rfEdges = rfEdgesNew
 
-        const newNodes = nameToNode[rfNode.type].asAudioNodes(rfNode.id, rfNode.data, connections);
+        const newNodes = nameToNode[rfNode.type].asAudioNodes(
+            rfNode.id,
+            rfNode.data,
+            connections
+        )
 
         return newNodes ? [...nodes, ...newNodes] : nodes
     }, [])

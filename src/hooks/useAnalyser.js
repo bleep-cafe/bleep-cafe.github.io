@@ -1,5 +1,5 @@
-import { useEffect, useMemo } from "react"
-import { ctx } from "../util/audioContext"
+import { useEffect, useMemo } from 'react'
+import { ctx } from '../util/audioContext'
 
 // Given the id for some audio connect, connect an analyser node to its output
 // and return the analyser node. This lets us hook into anywhere in the graph and
