@@ -16,6 +16,17 @@ const info =
 const inputs = []
 const outputs = [""]
 
+export const defaults = {
+    sample: null,
+    loop: true,
+    // This field holds the "version" of the sample because the buffer of an AudioBufferSourceNode
+    // can only be set once, whenever the sample changes, we increment the version number so that
+    // a new audio node is created with the new buffer because the version is part of the key.
+    version: 0,
+}
+
+// COMPONENTS ------------------------------------------------------------------
+
 export default function SampleNode({ id, data = defaults }) {
     const updateNode = useGraphStore(state => state.updateNode)
     const onSampleChange = useCallback(async (ev) => {
@@ -43,17 +54,12 @@ export default function SampleNode({ id, data = defaults }) {
     )
 }
 
-export const defaults = {
-    sample: null,
-    loop: true,
-    // This field holds the "version" of the sample because the buffer of an AudioBufferSourceNode
-    // can only be set once, whenever the sample changes, we increment the version number so that
-    // a new audio node is created with the new buffer because the version is part of the key.
-    version: 0,
-}
+// CONSTUCTORS -----------------------------------------------------------------
+
+export const type = SampleNode.name
 
 export const asReactFlowNode = (id, data = defaults, opts = {}) => ({
-    type: SampleNode.name, id, data, ...opts
+    type, id, data, ...opts
 })
 
 export const asAudioNodes = (id, data = defaults, connections = {}) => [

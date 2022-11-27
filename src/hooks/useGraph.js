@@ -2,7 +2,7 @@ import { addEdge, applyEdgeChanges, applyNodeChanges } from 'reactflow'
 import { useEffect, useLayoutEffect, useRef } from 'react'
 
 import create from 'zustand'
-import { defaults } from '../components/Nodes'
+import * as Nodes from '../components/nodes'
 import { distribute } from '../util/maths'
 import useAudio from './useAudio'
 import useElementSize from './useElementSize'
@@ -20,7 +20,7 @@ export function useGraph({ nodes, edges, ref }) {
                 ...n,
                 position: { x: 0, y: 0, ...n.position },
                 data: {
-                    ...defaults.get(n.type),
+                    ...Nodes[n.type].defaults,
                     ...n.data,
                 },
             })),

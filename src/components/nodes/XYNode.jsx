@@ -19,6 +19,13 @@ const info =
 const inputs = []
 const outputs = ["-x", "-y"]
 
+export const defaults = {
+    x: 0.5,
+    y: 0.5,
+}
+
+// COMPONENTS ------------------------------------------------------------------
+
 export default function XYNode({ id, data = defaults }) {
     const svg = useRef(null)
     const updateNode = useGraphStore(state => state.updateNode)
@@ -94,10 +101,9 @@ export default function XYNode({ id, data = defaults }) {
     )
 }
 
-export const defaults = {
-    x: 0.5,
-    y: 0.5,
-}
+// CONSTUCTORS -----------------------------------------------------------------
+
+export const type = XYNode.name
 
 export const asReactFlowNode = (id, data = defaults, opts = {}) => ({
     type: XYNode.name, id, data, ...opts

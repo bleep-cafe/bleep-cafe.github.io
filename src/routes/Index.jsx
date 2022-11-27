@@ -1,4 +1,4 @@
-import * as Nodes from '../components/Nodes'
+import { OscNode, AmpNode, DacNode, nodeTypes } from '../components/nodes'
 import * as Router from "react-router-dom"
 
 import ReactFlow from "reactflow"
@@ -59,9 +59,9 @@ function DemoGraph() {
     const useStore = useGraph({
         ref,
         nodes: [
-            { id: "1", type: Nodes.names.osc },
-            { id: "2", type: Nodes.names.amp },
-            { id: "3", type: Nodes.names.dac },
+            { id: "1", type: OscNode.type },
+            { id: "2", type: AmpNode.type },
+            { id: "3", type: DacNode.type },
         ],
         edges: [
             { id: "1->2", source: "1", sourceHandle: "out", target: "2", targetHandle: "in" },
@@ -78,7 +78,7 @@ function DemoGraph() {
         <ReactFlow
             edges={edges}
             nodes={nodes}
-            nodeTypes={Nodes.types}
+            nodeTypes={nodeTypes}
             onNodesChange={updateNodes}
             onEdgesChange={updateEdges}
             className="bg-neutral-100"

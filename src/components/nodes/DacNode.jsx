@@ -34,8 +34,10 @@ export default function DacNode({ id, data = defaults }) {
 
 // CONSTUCTORS -----------------------------------------------------------------
 
+export const type = DacNode.name
+
 export const asReactFlowNode = (id, data = defaults, opts = {}) => ({
-    type: DacNode.name, id, data, ...opts
+    type, id, data, ...opts
 })
 
 export const asAudioNodes = (id, data = defaults) => [

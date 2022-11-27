@@ -39,8 +39,10 @@ export default function AmpNode({ id, data = defaults }) {
 
 // CONSTUCTORS -----------------------------------------------------------------
 
+export const type = AmpNode.name
+
 export const asReactFlowNode = (id, data = defaults, opts = {}) => ({
-    type: AmpNode.name, id, data, ...opts
+    type, id, data, ...opts
 })
 
 export const asAudioNodes = (id, data = defaults, connections = {}) => [
