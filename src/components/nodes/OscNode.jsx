@@ -53,8 +53,10 @@ export default function OscNode({ id, data = defaults }) {
 
 // CONSTRUCTORS ----------------------------------------------------------------
 
+export const type = OscNode.name
+
 export const asReactFlowNode = (id, data = defaults, opts = {}) => ({
-    type: OscNode.name, id, data, ...opts
+    type, id, data, ...opts
 })
 
 export const asAudioNodes = (id, data = defaults, connections = {}) => [

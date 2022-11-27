@@ -1,7 +1,7 @@
 import * as Amp from "../components/nodes/AmpNode"
 import * as ContextMenu from "../components/ContextMenu"
 import * as Dac from "../components/nodes/DacNode"
-import * as Nodes from "../components/Nodes"
+import { nodeTypes } from "../components/nodes"
 import * as Osc from "../components/nodes/OscNode"
 import * as XY from "../components/nodes/XYNode"
 import * as Sample from "../components/nodes/SampleNode"
@@ -105,7 +105,7 @@ export default function Playground() {
                         <ReactFlow
                             edges={edges}
                             nodes={nodes}
-                            nodeTypes={Nodes.types}
+                            nodeTypes={nodeTypes}
                             onNodesChange={updateNodes}
                             onEdgesChange={updateEdges}
                             onConnect={onConnect}
