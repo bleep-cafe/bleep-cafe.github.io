@@ -227,6 +227,9 @@ export class VirtualAudioContext {
                 case 'WaveShaperNode':
                     return this.ctx.createWaveShaper()
 
+                case 'AudioBufferSourceNode':
+                    return this.ctx.createBufferSource()
+
                 default: {
                     // This is a known AudioNode that we currently do not support.
                     if (

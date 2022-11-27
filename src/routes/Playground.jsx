@@ -4,6 +4,7 @@ import * as Dac from "../components/nodes/DacNode"
 import * as Nodes from "../components/Nodes"
 import * as Osc from "../components/nodes/OscNode"
 import * as XY from "../components/nodes/XYNode"
+import * as Sample from "../components/nodes/SampleNode"
 
 import ReactFlow, { ReactFlowProvider } from "reactflow"
 import { useEffect, useRef, useState } from "react"
@@ -69,6 +70,7 @@ export default function Playground() {
     const menuItems = [
         { type: "item", label: "oscillator", shortcut: "O", onSelect: createNode(Osc.asReactFlowNode), classes: "rounded-t" },
         { type: "item", label: "amp", shortcut: "A", onSelect: createNode(Amp.asReactFlowNode) },
+        { type: "item", label: "sample", onSelect: createNode(Sample.asReactFlowNode)},
         { type: "divider" },
         { type: "item", label: "xy pad", onSelect: createNode(XY.asReactFlowNode) },
         { type: "divider" },

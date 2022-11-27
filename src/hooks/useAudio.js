@@ -1,14 +1,11 @@
+import { ctx } from '../util/audioContext'
 import AmpNode, * as Amp from '../components/nodes/AmpNode'
 import DacNode, * as Dac from '../components/nodes/DacNode'
 import OscNode, * as Osc from '../components/nodes/OscNode'
+import SampleNode, * as Sample from '../components/nodes/SampleNode'
 import VirtualAudioContext, * as Audio from '../audio/context'
 import XYNode, * as XY from '../components/nodes/XYNode'
-import { useEffect, useMemo } from 'react'
-
-// I don't think there's any reason to have multiple audio contexts on a page
-// so we'll just have a single top-level constant that every call to `useAudio`
-// can reuse.
-const ctx = new AudioContext()
+import { useMemo } from 'react'
 
 // The main hook, `useAudio` provides callers with a virtual audio context that
 // can be used to
@@ -43,23 +40,17 @@ export function useAudioContext() {
     }
 }
 
-// Given the id for some audio connect, connect an analyser node to its output
-// and return the analyser node. This lets us hook into anywhere in the graph and
-// do things like visualisation with the data.
-export function useAnalyser(id) {
-    const analyser = useMemo(() => new AnalyserNode(ctx, { fftSize: 2048 }), [])
-
-    useEffect(() => {
-        if (id in ctx.nodes) {
-            ctx.nodes[id].connect(analyser)
-            return () => ctx.nodes[id]?.disconnect(analyser)
-        }
-    }, [])
-
-    return analyser
-}
-
 // UTILS -----------------------------------------------------------------------
+
+// I long for pattern matching 😭. This is just mapping the node type to the
+// right constructor for virtual audio nodes.
+const nameToNode = {
+    [AmpNode.name]: Amp,
+    [DacNode.name]: Dac,
+    [OscNode.name]: Osc,
+    [XYNode.name]: XY,
+    [SampleNode.name]: Sample,
+}
 
 const nodesFromReactFlow = (rfNodes, rfEdges) =>
     rfNodes.reduce((nodes, rfNode) => {
@@ -123,22 +114,11 @@ const nodesFromReactFlow = (rfNodes, rfEdges) =>
         // every single iteration.
         rfEdges = rfEdgesNew
 
-        // I long for pattern matching 😭. This is just mapping the node type to the
-        // right constructor for virtual audio nodes.
-        const newNodes = (() => {
-            switch (rfNode.type) {
-                case AmpNode.name:
-                    return Amp.asAudioNodes(rfNode.id, rfNode.data, connections)
-                case DacNode.name:
-                    return Dac.asAudioNodes(rfNode.id, rfNode.data)
-                case OscNode.name:
-                    return Osc.asAudioNodes(rfNode.id, rfNode.data, connections)
-                case XYNode.name:
-                    return XY.asAudioNodes(rfNode.id, rfNode.data, connections)
-                default:
-                    return null
-            }
-        })()
+        const newNodes = nameToNode[rfNode.type].asAudioNodes(
+            rfNode.id,
+            rfNode.data,
+            connections
+        )
 
         return newNodes ? [...nodes, ...newNodes] : nodes
     }, [])

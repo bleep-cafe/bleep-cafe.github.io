@@ -1,4 +1,4 @@
-import { useAnalyser } from "../hooks/useAudio"
+import { useAnalyser } from "../hooks/useAnalyser"
 import useAnimationFrame from "../hooks/useAnimationFrame"
 import { useRef } from "react"
 
