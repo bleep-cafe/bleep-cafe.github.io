@@ -2,6 +2,7 @@ import { ctx } from "../util/audioContext"
 import AmpNode, * as Amp from '../components/nodes/AmpNode'
 import DacNode, * as Dac from '../components/nodes/DacNode'
 import OscNode, * as Osc from '../components/nodes/OscNode'
+import SampleNode, * as Sample from '../components/nodes/SampleNode'
 import VirtualAudioContext, * as Audio from '../audio/context'
 import XYNode, * as XY from '../components/nodes/XYNode'
 import { useMemo } from 'react'
@@ -48,6 +49,7 @@ const nameToNode = {
     [DacNode.name]: Dac,
     [OscNode.name]: Osc,
     [XYNode.name]: XY,
+    [SampleNode.name]: Sample,
 }
 
 const nodesFromReactFlow = (rfNodes, rfEdges) =>
