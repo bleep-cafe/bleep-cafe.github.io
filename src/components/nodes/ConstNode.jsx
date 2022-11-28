@@ -5,10 +5,11 @@ import * as Audio from '../../audio/context'
 import * as React from 'react'
 
 import BaseNode from './BaseNode'
+import { useGraphStore } from '../../hooks/useGraphStore'
 
 // CONSTANTS -------------------------------------------------------------------
 
-const name = ''
+const name = 'const'
 const info = '' /*
     // When `info` isn't empty, it will be displayed in a popover if the user
     // clicks the "?" icon in the top right corner of the node.
@@ -34,20 +35,34 @@ const info = '' /*
 // "left.frequency" -> signal.connect(nodes[`${id}-left`].frequency)
 //
 const inputs = []
-const outputs = []
+const outputs = ['']
 
 // The `defaults` object is used to initialize the node's data when it is
 // created. It is also used to reset the node's data when the user clicks the
 // "reset" button in the node's popover.
-export const defaults = {}
+export const defaults = {
+    value: 1,
+}
 
 // COMPONENTS ------------------------------------------------------------------
 
-export default function _TemplateNode({ id, data = defaults }) {
+export default function ConstNode({ id, data = defaults }) {
+    const updateNode = useGraphStore((state) => state.updateNode)
+
     return (
         <BaseNode name={name} info={info} inputs={inputs} outputs={outputs}>
-            {/* All UI controls for your node should go here. Sliders, toggles,
-                oscilloscopes... whatever you want! */}
+            <input
+                className="w-full"
+                type="number"
+                value={data.value}
+                onChange={(e) => {
+                    const value = +e.target.value
+                    updateNode(id, {
+                        ...data,
+                        value: Number.isNaN(value) ? 1 : value,
+                    })
+                }}
+            />
         </BaseNode>
     )
 }
@@ -55,10 +70,16 @@ export default function _TemplateNode({ id, data = defaults }) {
 // CONSTUCTORS -----------------------------------------------------------------
 
 export const asReactFlowNode = (id, data = defaults, opts = {}) => ({
-    type: _TemplateNode.name,
+    type: ConstNode.name,
     id,
     data,
     ...opts,
 })
 
-export const asAudioNodes = (id, data = defaults, connections = {}) => []
+export const asAudioNodes = (id, data = defaults, connections = {}) => [
+    Audio.node(
+        'ConstantSourceNode',
+        [Audio.param('offset', data.value)],
+        connections[id] ?? []
+    ),
+]

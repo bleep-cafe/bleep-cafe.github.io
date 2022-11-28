@@ -1,29 +1,33 @@
-import * as Amp from "../components/nodes/AmpNode"
-import * as ContextMenu from "../components/ContextMenu"
-import * as Dac from "../components/nodes/DacNode"
-import { nodeTypes } from "../components/nodes"
-import * as Osc from "../components/nodes/OscNode"
-import * as XY from "../components/nodes/XYNode"
-import * as Sample from "../components/nodes/SampleNode"
+import * as Add from '../components/nodes/AddNode'
+import * as Amp from '../components/nodes/AmpNode'
+import * as Const from '../components/nodes/ConstNode'
+import * as ContextMenu from '../components/ContextMenu'
+import * as Dac from '../components/nodes/DacNode'
+import * as Mul from '../components/nodes/MulNode'
+import * as Osc from '../components/nodes/OscNode'
+import * as XY from '../components/nodes/XYNode'
 
-import ReactFlow, { ReactFlowProvider } from "reactflow"
-import { useEffect, useRef, useState } from "react"
+import ReactFlow, { ReactFlowProvider } from 'reactflow'
+import { useEffect, useRef, useState } from 'react'
 
 import { GraphContext } from '../contexts/graphContext'
-import { useGraph } from "../hooks/useGraph"
+import { nodeTypes } from '../components/nodes'
+import { useGraph } from '../hooks/useGraph'
 
 export default function Playground() {
     const editor = useRef(null)
     const useStore = useGraph({
-        ref: editor, nodes: [], edges: []
+        ref: editor,
+        nodes: [],
+        edges: [],
     })
 
-    const nodes = useStore(state => state.nodes)
-    const edges = useStore(state => state.edges)
-    const insertNode = useStore(state => state.insertNode)
-    const updateNodes = useStore(state => state.updateNodes)
-    const updateEdges = useStore(state => state.updateEdges)
-    const onConnect = useStore(state => state.onConnect)
+    const nodes = useStore((state) => state.nodes)
+    const edges = useStore((state) => state.edges)
+    const insertNode = useStore((state) => state.insertNode)
+    const updateNodes = useStore((state) => state.updateNodes)
+    const updateEdges = useStore((state) => state.updateEdges)
+    const onConnect = useStore((state) => state.onConnect)
 
     // We keep track of the mouse position to know where to place a newly created
     // node.
@@ -37,7 +41,7 @@ export default function Playground() {
         }
         // Users should be able to create nodes either via keyboard shortcuts for
         // the most common nodes, or via a context menu to select from all nodes.
-        // 
+        //
         // If the context menu is opened, we want to stop tracking mouse position
         // so the new node is created at the position where the menu was opened
         // and not wherever the mouse was when navigating the menu!
@@ -46,16 +50,16 @@ export default function Playground() {
             setPosition({ x: clientX, y: clientY })
         }
 
-        window.addEventListener("mousemove", onMouseMove)
-        window.addEventListener("contextmenu", onContextMenu)
+        window.addEventListener('mousemove', onMouseMove)
+        window.addEventListener('contextmenu', onContextMenu)
 
         return () => {
-            window.addEventListener("mousemove", onMouseMove)
-            window.removeEventListener("contextmenu", onContextMenu)
+            window.addEventListener('mousemove', onMouseMove)
+            window.removeEventListener('contextmenu', onContextMenu)
         }
     }, [])
 
-    const createNode = constructor => _ => {
+    const createNode = (constructor) => (_) => {
         const opts = { position }
         // It's important to note the id of a node *must* be a string. Using just
         // `Date.now()` here would result in the node being added to the graph
@@ -68,34 +72,80 @@ export default function Playground() {
     }
 
     const menuItems = [
-        { type: "item", label: "oscillator", shortcut: "O", onSelect: createNode(Osc.asReactFlowNode), classes: "rounded-t" },
-        { type: "item", label: "amp", shortcut: "A", onSelect: createNode(Amp.asReactFlowNode) },
-        { type: "item", label: "sample", onSelect: createNode(Sample.asReactFlowNode)},
-        { type: "divider" },
-        { type: "item", label: "xy pad", onSelect: createNode(XY.asReactFlowNode) },
-        { type: "divider" },
-        { type: "item", label: "dac", shortcut: "D", onSelect: createNode(Dac.asReactFlowNode), classes: "rounded-b" },
+        {
+            type: 'item',
+            label: 'oscillator',
+            shortcut: 'O',
+            onSelect: createNode(Osc.asReactFlowNode),
+            classes: 'rounded-t',
+        },
+        {
+            type: 'item',
+            label: 'amp',
+            shortcut: 'A',
+            onSelect: createNode(Amp.asReactFlowNode),
+        },
+        { type: 'divider' },
+        {
+            type: 'item',
+            label: 'xy pad',
+            onSelect: createNode(XY.asReactFlowNode),
+        },
+        { type: 'divider' },
+        {
+            type: 'item',
+            label: 'const',
+            onSelect: createNode(Const.asReactFlowNode),
+        },
+        {
+            type: 'item',
+            label: 'add',
+            shortcut: '+',
+            onSelect: createNode(Add.asReactFlowNode),
+        },
+        {
+            type: 'item',
+            label: 'mul',
+            shortcut: '*',
+            onSelect: createNode(Mul.asReactFlowNode),
+        },
+        { type: 'divider' },
+        {
+            type: 'item',
+            label: 'dac',
+            shortcut: 'D',
+            onSelect: createNode(Dac.asReactFlowNode),
+            classes: 'rounded-b',
+        },
     ]
 
-    const menu = menuItems.map(({ type, label, shortcut, onSelect, classes = "" }, i) => {
-        switch (type) {
-            case "item":
-                return <ContextMenu.Item key={label} onSelect={onSelect} className={classes}>
-                    <span className="text-sm flex-1">{label}</span>
-                    {shortcut &&
-                        <kbd className="text-xs w-10 font-mono text-right text-neutral-500 group-hover:text-white">
-                            ⌘+{shortcut}
-                        </kbd>
-                    }
-                </ContextMenu.Item>
+    const menu = menuItems.map(
+        ({ type, label, shortcut, onSelect, classes = '' }, i) => {
+            switch (type) {
+                case 'item':
+                    return (
+                        <ContextMenu.Item
+                            key={label}
+                            onSelect={onSelect}
+                            className={classes}
+                        >
+                            <span className="text-sm flex-1">{label}</span>
+                            {shortcut && (
+                                <kbd className="text-xs w-10 font-mono text-right text-neutral-500 group-hover:text-white">
+                                    ⌘+{shortcut}
+                                </kbd>
+                            )}
+                        </ContextMenu.Item>
+                    )
 
-            case "divider":
-                return <ContextMenu.Divider key={label || i} />
+                case 'divider':
+                    return <ContextMenu.Divider key={label || i} />
 
-            default:
-                return null
+                default:
+                    return null
+            }
         }
-    })
+    )
 
     return (
         <ContextMenu.Root content={menu}>

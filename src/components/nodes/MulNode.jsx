@@ -8,13 +8,13 @@ import BaseNode from './BaseNode'
 
 // CONSTANTS -------------------------------------------------------------------
 
-const name = ''
+const name = 'mul'
 const info = '' /*
     // When `info` isn't empty, it will be displayed in a popover if the user
     // clicks the "?" icon in the top right corner of the node.
     //
     // You can put any old JSX here, but try to keep it brief and simple. For more
-    // detailed explanations, maybe consider adding a chapter to the learning
+    // detailed explanations, maybe consider muling a chapter to the learning
     // guide.
     <p>
     </p>
@@ -33,8 +33,8 @@ const info = '' /*
 // "left"           -> signal.connect(nodes[`${id}-left`])
 // "left.frequency" -> signal.connect(nodes[`${id}-left`].frequency)
 //
-const inputs = []
-const outputs = []
+const inputs = ['', '.gain']
+const outputs = ['']
 
 // The `defaults` object is used to initialize the node's data when it is
 // created. It is also used to reset the node's data when the user clicks the
@@ -43,7 +43,7 @@ export const defaults = {}
 
 // COMPONENTS ------------------------------------------------------------------
 
-export default function _TemplateNode({ id, data = defaults }) {
+export default function MulNode({ id, data = defaults }) {
     return (
         <BaseNode name={name} info={info} inputs={inputs} outputs={outputs}>
             {/* All UI controls for your node should go here. Sliders, toggles,
@@ -55,10 +55,15 @@ export default function _TemplateNode({ id, data = defaults }) {
 // CONSTUCTORS -----------------------------------------------------------------
 
 export const asReactFlowNode = (id, data = defaults, opts = {}) => ({
-    type: _TemplateNode.name,
+    type: MulNode.name,
     id,
     data,
     ...opts,
 })
 
-export const asAudioNodes = (id, data = defaults, connections = {}) => []
+export const asAudioNodes = (id, data = defaults, connections = {}) => [
+    Audio.keyed(
+        id,
+        Audio.node('GainNode', [Audio.param('gain', 0)], connections[id] ?? [])
+    ),
+]
