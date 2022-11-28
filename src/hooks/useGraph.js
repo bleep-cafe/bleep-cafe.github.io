@@ -1,8 +1,9 @@
+import * as Nodes from '../components/nodes'
+
 import { addEdge, applyEdgeChanges, applyNodeChanges } from 'reactflow'
 import { useEffect, useLayoutEffect, useRef } from 'react'
 
 import create from 'zustand'
-import * as Nodes from '../components/nodes'
 import { distribute } from '../util/maths'
 import useAudio from './useAudio'
 import useElementSize from './useElementSize'
@@ -20,7 +21,7 @@ export function useGraph({ nodes, edges, ref }) {
                 ...n,
                 position: { x: 0, y: 0, ...n.position },
                 data: {
-                    ...Nodes[n.type].defaults,
+                    ...Nodes[(console.log(n.type), n.type)].defaults,
                     ...n.data,
                 },
             })),
