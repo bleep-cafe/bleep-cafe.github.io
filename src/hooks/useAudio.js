@@ -49,8 +49,11 @@ export function useAudioContext() {
 // I long for pattern matching 😭. This is just mapping the node type to the
 // right constructor for virtual audio nodes.
 const nameToNode = {
+    [AddNode.name]: Add,
     [AmpNode.name]: Amp,
+    [ConstNode.name]: Const,
     [DacNode.name]: Dac,
+    [MulNode.name]: Mul,
     [OscNode.name]: Osc,
     [XYNode.name]: XY,
     [SampleNode.name]: Sample,
