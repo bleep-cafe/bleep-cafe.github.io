@@ -1,10 +1,14 @@
-import { ctx } from '../util/audioContext'
+import AddNode, * as Add from '../components/nodes/AddNode'
 import AmpNode, * as Amp from '../components/nodes/AmpNode'
+import ConstNode, * as Const from '../components/nodes/ConstNode'
 import DacNode, * as Dac from '../components/nodes/DacNode'
+import MulNode, * as Mul from '../components/Nodes/MulNode'
 import OscNode, * as Osc from '../components/nodes/OscNode'
 import SampleNode, * as Sample from '../components/nodes/SampleNode'
 import VirtualAudioContext, * as Audio from '../audio/context'
 import XYNode, * as XY from '../components/nodes/XYNode'
+
+import { ctx } from '../util/audioContext'
 import { useMemo } from 'react'
 
 // The main hook, `useAudio` provides callers with a virtual audio context that
@@ -75,6 +79,7 @@ const nodesFromReactFlow = (rfNodes, rfEdges) =>
                 // id's reflect the actual io names.
                 const source = rfEdge.sourceHandle.replace(/^out-?/, '')
                 const target = rfEdge.targetHandle.replace(/^in-?/, '')
+
                 const connection = Audio.ref(
                     target.startsWith('.') || target == ''
                         ? // Given a node id "foo", this handles creating connections
@@ -96,7 +101,7 @@ const nodesFromReactFlow = (rfNodes, rfEdges) =>
                           // out-foo-x
                           // out-foo-y
                           //
-                          rfEdge.target + '-' + target
+                          rfEdge.target + target
                 )
 
                 if (rfEdge.source + source in connections) {
